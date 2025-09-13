@@ -31,18 +31,18 @@ def setup_logging():
     yield
 
 
-@pytest.fixture(scope='session')
-def fixtt():
-    print(datetime.now(),"我是套娃fixture")
+# @pytest.fixture(scope='session')
+# def fixtt():
+#     print(datetime.now(),"我是套娃fixture")
 
-    yield
-    print(datetime.now(),"hahaha")
+#     yield
+#     print(datetime.now(),"hahaha")
 
-@pytest.fixture(scope='session', autouse=True)
-def fixt():
-    print(datetime.now(), "用例开始执行")
-    yield
-    print(datetime.now(), "用例执行结束")
+# @pytest.fixture(scope='session', autouse=True)
+# def fixt():
+#     print(datetime.now(), "用例开始执行")
+#     yield
+#     print(datetime.now(), "用例执行结束")
 
 
 # # 数据库配置信息（建议从环境变量或配置文件中读取）
