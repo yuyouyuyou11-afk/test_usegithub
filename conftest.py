@@ -5,23 +5,28 @@ from datetime import datetime
 
 @pytest.fixture(autouse=True)
 def setup_logging():
+    # 获取 root logger
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
-    # 控制台输出
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
-    logger.addHandler(console_handler)
+    # 防止重复添加 handler
+    if not logger.handlers:
+        # 控制台输出
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+        logger.addHandler(console_handler)
 
-    # Allure 输出
-    class AllureHandler(logging.Handler):
-        def emit(self, record):
-            log_entry = self.format(record)
-            allure.attach(log_entry, name="日志", attachment_type=allure.attachment_type.TEXT)
+        # Allure 输出
+        class AllureHandler(logging.Handler):
+            def emit(self, record):
+                log_entry = self.format(record)
+                # 只在测试函数中捕获日志，不捕获 fixture
+                if hasattr(record, "pathname") and "test_" in record.pathname:
+                    allure.attach(log_entry, name="日志", attachment_type=allure.attachment_type.TEXT)
 
-    allure_handler = AllureHandler()
-    allure_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
-    logger.addHandler(allure_handler)
+        allure_handler = AllureHandler()
+        allure_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+        logger.addHandler(allure_handler)
 
     yield
 
@@ -33,12 +38,11 @@ def fixtt():
     yield
     print(datetime.now(),"hahaha")
 
-@pytest.fixture(autouse=True,scope='session')
+@pytest.fixture(scope='session', autouse=True)
 def fixt():
-    print(datetime.now(),"用例开始执行")
-
+    print(datetime.now(), "用例开始执行")
     yield
-    print(datetime.now(),"用例执行结束")
+    print(datetime.now(), "用例执行结束")
 
 
 # # 数据库配置信息（建议从环境变量或配置文件中读取）

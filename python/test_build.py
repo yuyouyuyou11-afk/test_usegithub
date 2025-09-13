@@ -38,22 +38,23 @@ logger = logging.getLogger(__name__)
 
 
 
+logger = logging.getLogger(__name__)
 
 @allure.feature("加法功能")
 class TestAdd:
 
-        @allure.story("整数相加")
-        def test_int(self):
-            logger.info("开始执行整数相加用例")
-            a, b = 3, 5
-            result = a + b
-            logger.info(f"计算结果: {result}")
-            assert result == 8
+    @allure.story("整数相加")
+    def test_int(self):
+        logger.info("开始执行整数相加用例")
+        a, b = 3, 5
+        result = a + b
+        logger.info(f"计算结果: {result}")
+        assert result == 8
 
-        @allure.story("字符串相加")
-        def test_str(self):
-            logger.info("开始执行字符串拼接用例")
-            a, b = "Hello", "World"
-            result = a + b
-            logger.info(f"拼接结果: {result}")
-            assert result == "HelloWorld"
+    @allure.story("字符串相加")
+    def test_str(self):
+        logger.info("开始执行字符串拼接用例")
+        a, b = "Hello", "World"
+        result = a + b
+        logger.info(f"拼接结果: {result}")
+        assert result == "HelloWorld"
