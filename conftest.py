@@ -1,18 +1,29 @@
-
-from datetime import datetime
-# import pymysql  # 使用pymysql作为示例，可根据实际数据库调整
-import pytest
-from typing import Generator, Any
-
-
 import logging
 import pytest
+import allure
+from datetime import datetime
 
 @pytest.fixture(autouse=True)
 def setup_logging():
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-    yield
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
 
+    # 控制台输出
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+    logger.addHandler(console_handler)
+
+    # Allure 输出
+    class AllureHandler(logging.Handler):
+        def emit(self, record):
+            log_entry = self.format(record)
+            allure.attach(log_entry, name="日志", attachment_type=allure.attachment_type.TEXT)
+
+    allure_handler = AllureHandler()
+    allure_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+    logger.addHandler(allure_handler)
+
+    yield
 
 
 @pytest.fixture(scope='session')
